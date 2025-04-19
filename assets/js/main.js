@@ -35,44 +35,10 @@
   }
 
   /**
-   * Easy on scroll event listener 
+   * Easy on scroll event listener
    */
   const onscroll = (el, listener) => {
     el.addEventListener('scroll', listener)
-  }
-
-  /**
-   * Navbar links active state on scroll
-   */
-  let navbarlinks = select('#navbar .scrollto', true)
-  const navbarlinksActive = () => {
-    let position = window.scrollY + 200
-    navbarlinks.forEach(navbarlink => {
-      if (!navbarlink.hash) return
-      let section = select(navbarlink.hash)
-      if (!section) return
-      if (position >= section.offsetTop && position <= (section.offsetTop + section.offsetHeight)) {
-        navbarlink.classList.add('active')
-      } else {
-        navbarlink.classList.remove('active')
-      }
-    })
-  }
-  window.addEventListener('load', navbarlinksActive)
-  onscroll(document, navbarlinksActive)
-
-  /**
-   * Scrolls to an element with header offset
-   */
-  const scrollto = (el) => {
-    let header = select('#header')
-    let offset = header.offsetHeight
-
-    let elementPos = select(el).offsetTop
-    window.scrollTo({
-      top: elementPos - offset,
-      behavior: 'smooth'
-    })
   }
 
   /**
@@ -94,50 +60,190 @@
   /**
    * Mobile nav toggle
    */
+  // const mobileNavShow = document.querySelector('.mobile-nav-show'); // Orijinal template toggle'ı olabilir, kalsın
+  // const mobileNavHide = document.querySelector('.mobile-nav-hide'); // Orijinal template toggle'ı olabilir, kalsın
+
+  // document.querySelectorAll('.mobile-nav-toggle').forEach(el => { // Orijinal template toggle'ı olabilir, kalsın
+  //   el.addEventListener('click', function(event) {
+  //     event.preventDefault();
+  //     mobileNavToogle();
+  //   })
+  // });
+
+  // function mobileNavToogle() { // Orijinal template toggle'ı olabilir, kalsın
+  //   document.querySelector('body').classList.toggle('mobile-nav-active');
+  //   mobileNavShow.classList.toggle('d-none');
+  //   mobileNavHide.classList.toggle('d-none');
+  // }
+
+  // /**
+  //  * Hide mobile nav on same-page/hash links
+  //  */
+  // document.querySelectorAll('#navbar a').forEach(navbarlink => { // Orijinal template toggle'ı olabilir, kalsın
+
+  //   if (!navbarlink.hash) return;
+
+  //   let section = document.querySelector(navbarlink.hash);
+  //   if (!section) return;
+
+  //   navbarlink.addEventListener('click', () => {
+  //     if (document.querySelector('.mobile-nav-active')) {
+  //       mobileNavToogle();
+  //     }
+  //   });
+
+  // });
+
+  /* ESKİ MOBİL PANEL KODLARI - KALDIRILIYOR */
+  // const mobileNavToggleBtn = document.querySelector('#mobile-nav-toggle-btn');
+  // const mobileNavPanel = document.querySelector('#mobile-nav-panel');
+  // const mobileNavCloseBtn = document.querySelector('#mobile-nav-close-btn');
+  // const mobileNavLinks = document.querySelectorAll('#mobile-nav-panel a');
+
+  // // Mobil menüyü açma
+  // if (mobileNavToggleBtn && mobileNavPanel) {
+  //   mobileNavToggleBtn.addEventListener('click', function() {
+  //     mobileNavPanel.classList.add('panel-active');
+  //     // İsteğe bağlı: Arka planı karartmak için body'e class ekle
+  //     // document.body.classList.add('mobile-nav-active');
+  //   });
+  // }
+
+  // // Mobil menüyü kapatma (X butonu)
+  // if (mobileNavCloseBtn && mobileNavPanel) {
+  //   mobileNavCloseBtn.addEventListener('click', function() {
+  //     mobileNavPanel.classList.remove('panel-active');
+  //     // İsteğe bağlı: Body class'ını kaldır
+  //     // document.body.classList.remove('mobile-nav-active');
+  //   });
+  // }
+
+  // // Mobil menüyü kapatma (Link tıklanınca)
+  // if (mobileNavLinks.length > 0 && mobileNavPanel) {
+  //   mobileNavLinks.forEach(link => {
+  //     link.addEventListener('click', function(e) {
+  //       // Eğer link bir hash linki değilse veya farklı bir sayfaya gidiyorsa kapat
+  //       if (!link.getAttribute('href').startsWith('#') || window.location.pathname !== link.pathname) {
+  //          mobileNavPanel.classList.remove('panel-active');
+  //          // document.body.classList.remove('mobile-nav-active');
+  //       } else if (link.getAttribute('href') !== '#') {
+  //         // Aynı sayfada bir bölüme gidiyorsa da kapatılabilir (isteğe bağlı)
+  //         mobileNavPanel.classList.remove('panel-active');
+  //         // document.body.classList.remove('mobile-nav-active');
+  //       }
+  //     });
+  //   });
+  // }
+
+  // // İsteğe Bağlı: Panel dışına tıklayınca kapatma
+  // /*
+  // document.addEventListener('click', function(event) {
+  //   const isClickInsidePanel = mobileNavPanel.contains(event.target);
+  //   const isClickOnToggleButton = mobileNavToggleBtn.contains(event.target);
+
+  //   if (!isClickInsidePanel && !isClickOnToggleButton && mobileNavPanel.classList.contains('panel-active')) {
+  //     mobileNavPanel.classList.remove('panel-active');
+  //     // document.body.classList.remove('mobile-nav-active');
+  //   }
+  // });
+  // */
+  /* ESKİ MOBİL PANEL KODLARI SONU */
+
+  /**
+   * Yeni Mobil Navigasyon Paneli Toggle
+   */
+  const mobileNavPanel = select('#mobile-nav-panel');
+  const body = select('body');
+
+  // Açma Butonu (.mobile-nav-toggle artık mobil header içinde)
   on('click', '.mobile-nav-toggle', function(e) {
-    select('#navbar').classList.toggle('navbar-mobile')
-    this.classList.toggle('bi-list')
-    this.classList.toggle('bi-x')
-  })
-
-  /**
-   * Mobile nav dropdowns activate
-   */
-  on('click', '.navbar .dropdown > a', function(e) {
-    if (select('#navbar').classList.contains('navbar-mobile')) {
-      e.preventDefault()
-      this.nextElementSibling.classList.toggle('dropdown-active')
-    }
-  }, true)
-
-  /**
-   * Scrool with ofset on links with a class name .scrollto
-   */
-  on('click', '.scrollto', function(e) {
-    if (select(this.hash)) {
-      e.preventDefault()
-
-      let navbar = select('#navbar')
-      if (navbar.classList.contains('navbar-mobile')) {
-        navbar.classList.remove('navbar-mobile')
-        let navbarToggle = select('.mobile-nav-toggle')
-        navbarToggle.classList.toggle('bi-list')
-        navbarToggle.classList.toggle('bi-x')
-      }
-      scrollto(this.hash)
-    }
-  }, true)
-
-  /**
-   * Scroll with ofset on page load with hash links in the url
-   */
-  window.addEventListener('load', () => {
-    if (window.location.hash) {
-      if (select(window.location.hash)) {
-        scrollto(window.location.hash)
-      }
+    if (mobileNavPanel) {
+      mobileNavPanel.classList.add('panel-active');
+      body.classList.add('mobile-nav-active'); // Overlay için body'ye sınıf ekle
     }
   });
+
+  // Kapatma Butonu (.mobile-nav-close panel içinde)
+  on('click', '.mobile-nav-close', function(e) {
+    if (mobileNavPanel) {
+      mobileNavPanel.classList.remove('panel-active');
+      body.classList.remove('mobile-nav-active'); // Overlay için body'den sınıfı kaldır
+    }
+  });
+
+  // Paneldeki Linke Tıklayınca Kapat
+  on('click', '#mobile-nav-panel a', function(e) {
+     // Farklı sayfaya gidiyorsa veya hash link değilse paneli kapat
+    if (this.pathname !== window.location.pathname || !this.hash || this.hash === '#') {
+        if (mobileNavPanel && mobileNavPanel.classList.contains('panel-active')) {
+            mobileNavPanel.classList.remove('panel-active');
+            body.classList.remove('mobile-nav-active');
+        }
+    }
+    // Hash link ise (aynı sayfa içi scroll), kapatmaya gerek yok veya isteğe bağlı.
+    // Şimdilik sadece farklı sayfa veya ana sayfa linklerinde kapatıyoruz.
+  }, true);
+
+  // Panel Dışına Tıklayınca Kapat (Opsiyonel)
+  /*
+  body.addEventListener('click', function(e) {
+      if (mobileNavPanel && mobileNavPanel.classList.contains('panel-active')) {
+          const toggleButton = select('.mobile-nav-toggle');
+          // Eğer tıklanan yer panelin kendisi veya panelin içindeyse kapatma
+          if (e.target === mobileNavPanel || mobileNavPanel.contains(e.target)) return;
+          // Eğer tıklanan yer açma butonuysa kapatma (zaten toggle yapıyor)
+          if (toggleButton && toggleButton.contains(e.target)) return;
+
+          mobileNavPanel.classList.remove('panel-active');
+          body.classList.remove('mobile-nav-active');
+      }
+  });
+  */
+
+  /* ESKİ MOBİL PANEL KODLARI SONU - Tekrar Aktif Edildi */
+
+  /**
+   * Mobil Panel Dropdown Toggle
+   */
+  on('click', '#mobile-nav-panel .dropdown > a', function(e) {
+    // Eğer linkin href'i '#' değilse, normal link gibi davranmasına izin ver
+    if (this.getAttribute('href') !== '#') return;
+    
+    e.preventDefault(); // href='#' ise sayfa başına gitmesini engelle
+    this.parentNode.classList.toggle('active'); // li elementine active class ekle/kaldır
+  }, true);
+
+  /**
+   * Header fixed on scroll
+   * Adds .header-scrolled class to #header when scrolled past the top bar.
+   */
+  const selectHeader = select('#header');
+  const selectTopbar = select('#topbar');
+
+  if (selectHeader) {
+    const headerScrolled = () => {
+      // Top bar'ın yüksekliğini al (yoksa 0 kabul et)
+      let topbarHeight = selectTopbar ? selectTopbar.offsetHeight : 0;
+
+      // Eğer kaydırma miktarı top bar yüksekliğini geçtiyse
+      if (window.scrollY > topbarHeight) {
+        selectHeader.classList.add('header-scrolled');
+        // İsteğe bağlı: Top bar'ı tamamen gizle
+        // if (selectTopbar) { selectTopbar.style.display = 'none'; }
+      } else {
+        selectHeader.classList.remove('header-scrolled');
+        // İsteğe bağlı: Top bar'ı tekrar göster
+        // if (selectTopbar) { selectTopbar.style.display = 'flex'; } // veya 'block'
+      }
+    }
+    // Sayfa yüklendiğinde ve kaydırıldığında kontrol et
+    window.addEventListener('load', headerScrolled);
+    document.addEventListener('scroll', headerScrolled);
+  }
+
+  /**
+   * Toggle mobile nav dropdowns - Bu orijinal şablonun olabilir, emin değiliz.
+   */
 
   /**
    * Porfolio isotope and filter
@@ -171,27 +277,10 @@
   });
 
   /**
-   * Initiate portfolio lightbox 
+   * Initiate portfolio lightbox
    */
   const portfolioLightbox = GLightbox({
     selector: '.portfolio-lightbox'
-  });
-
-  /**
-   * Portfolio details slider
-   */
-  new Swiper('.portfolio-details-slider', {
-    speed: 400,
-    loop: true,
-    autoplay: {
-      delay: 5000,
-      disableOnInteraction: false
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      type: 'bullets',
-      clickable: true
-    }
   });
 
   /**
